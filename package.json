@@ -1,0 +1,18 @@
+{
+  "name": "teste-tecnico-automacao",
+  "version": "1.0.0",
+  "scripts": {
+    "load-test": "k6 run ./load-tests/load-test.js --summary-export=load-tests/results.json && k6-to-html load-tests/results.json -o load-tests/reports/load-report.html",
+    "api-test": "playwright test api-tests/api.spec.js --reporter=html",
+    "e2e-test": "cucumber-js e2e-tests/features/ --require e2e-tests/steps.js --format html:e2e-tests/reports/e2e-report.html",
+    "mobile-test": "node mobile-tests/appium-test.js"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.40.0",
+    "@cucumber/cucumber": "^9.3.0",
+    "k6": "^0.47.0",
+    "webdriverio": "^8.16.0",
+    "playwright": "^1.40.0",
+    "k6-html-reporter": "^1.0.1"
+  }
+}

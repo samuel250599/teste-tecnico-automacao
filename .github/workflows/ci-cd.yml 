@@ -1,0 +1,39 @@
+cat > teste-tecnico-automacao/.github/workflows/ci-cd.yml <<'EOF'
+name: CI/CD Pipeline
+
+on: [push]
+
+jobs:
+  load-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: grafana/k6-action@v0.2.0
+        with:
+          filename: load-tests/load-test.js
+
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npx playwright test api-tests/api.spec.js --reporter=html
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: api-report
+          path: api-tests/reports/
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npx cucumber-js e2e-tests/features/ --require e2e-tests/steps.js --format html:e2e-tests/reports/report.html
+EOF
